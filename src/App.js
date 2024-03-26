@@ -1,24 +1,66 @@
 import logo from './logo.svg';
 import './App.css';
+import Navbar from './components/Navbar';
+import TextForms from './components/TextForms';
+import About from './components/About';
+import React, { useState } from 'react';
+import Alert from './components/Alert';
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Routes
+} from "react-router-dom"
+
 
 function App() {
+  const [mode, setMode] = useState('light');
+  const [navtext,setNavtext] = useState('Enable Dark Mode');
+  const [alert,setAlert] = useState(null)
+
+  const showAlert=(message,type)=>{
+    setAlert({
+      msg:message,
+      type:type
+    })
+    setTimeout(()=>{
+      setAlert(null)
+    },1500)
+  }
+  const toggleMode =()=>{
+    if(mode === 'light'){
+      setMode('dark');
+      document.body.style.backgroundColor='#042743';
+      setNavtext('Disable Dark Mode')
+      showAlert("Dark mode has been enabled", "success")
+    }
+    
+    else{
+      setMode('light');
+      document.body.style.backgroundColor='white';
+      setNavtext('Enable Dark Mode')
+      showAlert("Dark mode has been desabled", "success")
+    }
+    
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <>
+    <Router>
+    <Navbar title="TextUtils" About="AboutUs" mode={mode} toggleMode={toggleMode} navtext={navtext}/>
+    <Alert alert={alert}/>
+    <div className="container my-3">
+    <Switch>
+          <Route path="/about">
+            <About />
+          </Route>
+          <Route path="/">
+          <TextForms showAlert={showAlert}heading="Enter Your Text Below" mode={mode}/>
+          </Route>
+        </Switch> 
     </div>
+    </Router>
+    </>
   );
 }
 
